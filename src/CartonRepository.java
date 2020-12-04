@@ -3,11 +3,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CartonRepository {
     private ArrayList<Carton> cartonesGenerados;
-    private ConcurrentHashMap<Integer, Carton> cartonesEnPartida;
+    private final ConcurrentHashMap<Integer, Carton> cartonesEnPartida;
 
     public CartonRepository() {
-        this.cartonesGenerados = new ArrayList<Carton>();
-        this.cartonesEnPartida = new ConcurrentHashMap<Integer, Carton>();
+        this.cartonesGenerados = new ArrayList<>();
+        this.cartonesEnPartida = new ConcurrentHashMap<>();
     }
 
     public final void addCarton(Carton carton){
@@ -28,7 +28,7 @@ public class CartonRepository {
         }
     }
     public final ArrayList<Integer> comprobarLinea(){
-        ArrayList<Integer> ganadoresLinea = new ArrayList<Integer>();
+        ArrayList<Integer> ganadoresLinea = new ArrayList<>();
         for(Carton carton : cartonesEnPartida.values()){
             for(int i=0; i<carton.getNumeros().length; i++) {
                 int numTachados = 0;

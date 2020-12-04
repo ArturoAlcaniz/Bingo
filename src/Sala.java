@@ -88,16 +88,16 @@ final class Sala {
     }
 
     public String obtenerGanadores(){
-        String ganadoresL = "";
-        for (String ganador : ganadoresLinea){
-            ganadoresL = ganadoresL+ganador+" ";
+        StringBuilder ganadoresL = new StringBuilder();
+        StringBuilder ganadoresB = new StringBuilder();
+        for (String ganador : ganadoresLinea) {
+            ganadoresL.append(ganador).append(" ");
         }
-        String ganadoresB = "";
-        for (String ganador : ganadoresBingo){
-            ganadoresB = ganadoresB+ganador+" ";
+        for (String ganador : ganadoresBingo) {
+            ganadoresB.append(ganador).append(" ");
         }
-        String ganadores = "Ganadores de linea:\n"+ganadoresL+"\n"+"Ganadores de bingo:\n"+ganadoresB;
-        return ganadores;
+        return "Ganadores de linea:\n" + ganadoresL.toString() + "\n" +
+                "Ganadores de bingo:\n" + ganadoresB.toString();
     }
 
     public ArrayList<int[][]> obtenerCartonesLinea(){
