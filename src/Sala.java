@@ -1,28 +1,27 @@
 import java.util.ArrayList;
+import java.util.List;
 
 final class Sala {
-    private int id;
-    private Bombo bombo;
-    private CartonRepository cartonRepository;
-    private UserRepository userRepository;
+    private final Bombo bombo;
+    private final CartonRepository cartonRepository;
+    private final UserRepository userRepository;
     private boolean lineaCantada;
     private boolean bingoCantado;
-    private ArrayList<String> ganadoresLinea;
-    private ArrayList<String> ganadoresBingo;
-    private ArrayList<int[][]> cartonesLinea;
-    private ArrayList<int[][]> cartonesBingo;
+    private final ArrayList<String> ganadoresLinea;
+    private final ArrayList<String> ganadoresBingo;
+    private final ArrayList<int[][]> cartonesLinea;
+    private final ArrayList<int[][]> cartonesBingo;
 
-    public Sala(int id) {
-        this.id = id;
+    public Sala() {
         this.bombo = new Bombo();
         this.cartonRepository = new CartonRepository();
         this.userRepository = new UserRepository();
         this.lineaCantada = false;
         this.bingoCantado = false;
-        this.ganadoresLinea = new ArrayList<String>();
-        this.ganadoresBingo = new ArrayList<String>();
-        this.cartonesLinea = new ArrayList<int[][]>();
-        this.cartonesBingo = new ArrayList<int[][]>();
+        this.ganadoresLinea = new ArrayList<>();
+        this.ganadoresBingo = new ArrayList<>();
+        this.cartonesLinea = new ArrayList<>();
+        this.cartonesBingo = new ArrayList<>();
     }
 
     public void nuevoParticipante(String nombre, int cartones) {
@@ -30,9 +29,9 @@ final class Sala {
         userRepository.addUser(user);
     }
 
-    public ArrayList<Integer> crearCartones(int cartones){
-        ArrayList<Integer> cartonesCreados = new ArrayList<Integer>();
-        for(int i=0; i<cartones; i++){
+    public List<Integer> crearCartones(int cartones) {
+        List<Integer> cartonesCreados = new ArrayList<>();
+        for (int i = 0; i < cartones; i++) {
             int idCarton = cartonRepository.getId();
             Carton carton = new Carton(idCarton);
             cartonRepository.addCarton(carton);
@@ -41,7 +40,7 @@ final class Sala {
         return cartonesCreados;
     }
 
-    public void comenzarBingo(){
+    public void comenzarBingo() {
         if(userRepository.getId()>0){
             userRepository.comienzaPartida();
             cartonRepository.comienzaPartida();
@@ -50,44 +49,36 @@ final class Sala {
                 cartonRepository.bolaSacada(bola);
                 if(!cartonRepository.comprobarLinea().isEmpty() && !lineaCantada) {
                     lineaCantada = !cartonRepository.comprobarLinea().isEmpty();
-                    ArrayList<Integer> ganadores = cartonRepository.comprobarLinea();
-                    for(Integer i : ganadores){
-                        int[][] n = new int[cartonRepository.getNumerosPartida(i).length][cartonRepository.getNumerosPartida(i)[0].length];
-                        copiarCarton(n, cartonRepository.getNumerosPartida(i));
-                        cartonesLinea.add(n);
-                        for(User user : userRepository.getUsersPartida().values()){
-                            if(user.getCartones().contains(i))
-                                ganadoresLinea.add(user.getNombre());
-                        }
-                    }
+                    List<Integer> ganadores = cartonRepository.comprobarLinea();
+                    guardarGanadores(ganadores, cartonesLinea, ganadoresLinea);
 
                 }
-                if(!cartonRepository.comprobarBingo().isEmpty() && !bingoCantado) {
+                if (!cartonRepository.comprobarBingo().isEmpty() && !bingoCantado) {
                     bingoCantado = !cartonRepository.comprobarBingo().isEmpty();
-                    ArrayList<Integer> ganadores = cartonRepository.comprobarBingo();
-                    for(Integer i : ganadores){
-                        int[][] n = new int[cartonRepository.getNumerosPartida(i).length][cartonRepository.getNumerosPartida(i)[0].length];
-                        copiarCarton(n, cartonRepository.getNumerosPartida(i));
-                        cartonesBingo.add(n);
-                        for(User user : userRepository.getUsersPartida().values()){
-                            if(user.getCartones().contains(i))
-                                ganadoresBingo.add(user.getNombre());
-                        }
-                    }
+                    List<Integer> ganadores = cartonRepository.comprobarBingo();
+                    guardarGanadores(ganadores, cartonesBingo, ganadoresBingo);
                 }
             }
         }
     }
 
-    public void copiarCarton(int[][] destino, int[][] origen){
-        for(int i=0; i<destino.length; i++){
-            for(int j=0; j<destino[0].length; j++){
-                destino[i][j] = origen[i][j];
+    private void guardarGanadores(List<Integer> ganadores, ArrayList<int[][]> cartonesLinea, ArrayList<String> ganadoresLinea) {
+        for (Integer i : ganadores) {
+            int[][] n = new int[cartonRepository.getNumerosPartida(i).length][cartonRepository.getNumerosPartida(i)[0].length];
+            copiarCarton(n, cartonRepository.getNumerosPartida(i));
+            cartonesLinea.add(n);
+            for (User user : userRepository.getUsersPartida().values()) {
+                if (user.getCartones().contains(i))
+                    ganadoresLinea.add(user.getNombre());
             }
         }
     }
 
-    public String obtenerGanadores(){
+    public void copiarCarton(int[][] destino, int[][] origen) {
+        System.arraycopy(origen, 0, destino, 0, origen.length);
+    }
+
+    public String obtenerGanadores() {
         StringBuilder ganadoresL = new StringBuilder();
         StringBuilder ganadoresB = new StringBuilder();
         for (String ganador : ganadoresLinea) {
@@ -100,11 +91,11 @@ final class Sala {
                 "Ganadores de bingo:\n" + ganadoresB.toString();
     }
 
-    public ArrayList<int[][]> obtenerCartonesLinea(){
+    public List<int[][]> obtenerCartonesLinea() {
         return cartonesLinea;
     }
 
-    public ArrayList<int[][]> obtenerCartonesBingo(){
+    public List<int[][]> obtenerCartonesBingo() {
         return cartonesBingo;
     }
 }

@@ -4,20 +4,27 @@ public class Prueba {
 
     public static void main(String[] args) {
         final Logger logger = Logger.getLogger(Prueba.class.getName());
-        Sala sala = new Sala(1);
+        Sala sala = new Sala();
         sala.nuevoParticipante("Pepe", 2);
         sala.nuevoParticipante("Artur", 2);
         sala.comenzarBingo();
-        logger.info(sala.obtenerGanadores());
+        String ganadores = sala.obtenerGanadores();
+        logger.info(ganadores);
         logger.info("Cartones con linea:");
         StringPrinterCarton printer = new StringPrinterCarton();
+        StringBuilder cartonesConLinea = new StringBuilder();
         for (int[][] numeros : sala.obtenerCartonesLinea()) {
-            logger.info("\n" + printer.printCarton(numeros));
+            cartonesConLinea.append("\n").append(printer.printCarton(numeros));
         }
+        String cartonesLinea = cartonesConLinea.toString();
+        logger.info(cartonesLinea);
         logger.info("\n");
         logger.info("Cartones con bingo:");
+        StringBuilder cartonesConBingo = new StringBuilder();
         for (int[][] numeros : sala.obtenerCartonesBingo()) {
-            logger.info("\n" + printer.printCarton(numeros));
+            cartonesConBingo.append("\n").append(printer.printCarton(numeros));
         }
+        String cartonesBingo = cartonesConBingo.toString();
+        logger.info(cartonesBingo);
     }
 }
